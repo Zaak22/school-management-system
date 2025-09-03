@@ -34,6 +34,7 @@ class CI_Migration {}
 class CI_Controller {}
 
 /**
- * @mixin CI_DB_forge
+  * @property CI_DB db
+  * @mixin CI_DB
  */
-class MY_Migration extends CI_Migration {}
+class CI_Model {}

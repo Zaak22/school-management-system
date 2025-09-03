@@ -19,7 +19,6 @@ class Users extends MY_Controller
 
 	public function login()
 	{
-
 		$validator = array('success' => false, 'messages' => array());
 
 		$validate_data = array(
@@ -34,11 +33,10 @@ class Users extends MY_Controller
 				'rules' => 'required'
 			)
 		);
-
+		
 		$this->form_validation->set_rules($validate_data);
 		$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
-
-		if($this->form_validation->run() === true) {			
+		if($this->form_validation->run() === true) {
 			$username = $this->input->post('username');
 			$password = md5($this->input->post('password'));
 
