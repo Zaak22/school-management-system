@@ -279,6 +279,7 @@ MANAGE STUDENT PAYMENT
           <tr>
             <th>Name</th>
             <th>Amount</th>
+            <th>Attachment</th>
             <th style="width:10%;">Action</th>
           </tr>
         </thead>
@@ -290,6 +291,9 @@ MANAGE STUDENT PAYMENT
             </td>          
             <td class="form-group">
             <input type="text" class="form-control" name="subExpensesAmount[<?php echo $x; ?>]" id="subExpensesAmount<?php echo $x; ?>" onkeyup="calculateTotalAmount()" placeholder="Expenses Amount" />
+            </td>  
+            <td class="form-group">
+            <input type="file" class="form-control" name="subExpensesAttachment[<?php echo $x; ?>]" id="subExpensesAttachment<?php echo $x; ?>" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx"/>
             </td>          
             <td>
             <button type="button" class="btn btn-default" onclick="removeExpensesRow(<?php echo $x; ?>)"><i class="glyphicon glyphicon-remove"></i></button>
@@ -314,7 +318,7 @@ MANAGE STUDENT PAYMENT
 <div class="modal fade" id="edit-expenses-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content" >
-      <form action="accounting/updateExpenses" method="post" class="form-horizontal" id="editEpxensesForm">
+      <form action="accounting/updateExpenses" method="post" class="form-horizontal" id="editEpxensesForm" enctype="multipart/form-data">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Edit Expenses</h4>

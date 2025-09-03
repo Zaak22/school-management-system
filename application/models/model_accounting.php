@@ -223,14 +223,15 @@ class Model_Accounting extends CI_Model
 	* paymentId for `payment` table `payment_id`
 	*---------------------------------------------------------------
 	*/
-	public function updateStudentPay($paymentId = null)
+	public function updateStudentPay($paymentId = null, $attachemt)
 	{
 		if($paymentId) {
 			$update_data = array(
 				'payment_date' => $this->input->post('studentPayDate'),
 				'paid_amount'  => $this->input->post('paidAmount'),
 				'payment_type' => $this->input->post('paymentType'),
-				'status'       => $this->input->post('status')
+				'status'       => $this->input->post('status'),
+				'attachment'   => $attachemt,
 			);
 
 			$this->db->where('payment_id', $paymentId);
@@ -269,7 +270,7 @@ class Model_Accounting extends CI_Model
 	* expenses item in `expenses` table
 	*---------------------------------------------------------------
 	*/
-	public function createExpenses()
+	public function createExpenses($attachments)
 	{
 		$insert_name = array(
 			'date' => $this->input->post('expensesDate'),
@@ -284,11 +285,12 @@ class Model_Accounting extends CI_Model
 			$insert_data = array(									
 				'expenses_name'    => $this->input->post('subExpensesName')[$x],
 				'expenses_amount'  => $this->input->post('subExpensesAmount')[$x],			
-				'expenses_name_id' => $expenses_name_id
+				'expenses_name_id' => $expenses_name_id,
+				'attachment' 	   => isset($attachments[$x]) ? $attachments[$x] : null,
 			);
 			$status = $this->db->insert('expenses', $insert_data);		
 		} // /.for
-			
+
 		return ($status === true ? true : false);	
 	}
 
@@ -349,7 +351,7 @@ class Model_Accounting extends CI_Model
 	* `expenses` table. After that insert the new data 
 	*---------------------------------------------------------------
 	*/
-	public function updateExpenses($id = null)
+	public function updateExpenses($id = null, $attachments)
 	{
 		if($id) {
 			$update_data = array(
@@ -369,7 +371,8 @@ class Model_Accounting extends CI_Model
 				$insert_data = array(									
 					'expenses_name'    => $this->input->post('editSubExpensesName')[$x],
 					'expenses_amount'  => $this->input->post('editSubExpensesAmount')[$x],			
-					'expenses_name_id' => $id
+					'expenses_name_id' => $id,
+					'attachment' => isset($attachments[$x]) ? $attachments[$x] : null,
 				);
 				$status = $this->db->insert('expenses', $insert_data);		
 			} // /.for

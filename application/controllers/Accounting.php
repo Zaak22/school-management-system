@@ -403,7 +403,6 @@ class Accounting extends MY_Controller
 		echo json_encode($validator);
 	}
 
-
 	/*
 	*------------------------------------------------
 	* creates the bulk student's payment
@@ -536,6 +535,14 @@ class Accounting extends MY_Controller
 				$status = '<label class="label label-danget">Unpaid</label>';
 			}
 
+
+
+			$attachemt = '';
+			if(isset($value['attachment'])){
+				$url = base_url($value['attachment']);
+				$attachemt = '<a class = "btn btn-xs btn-info" href="' . $url . '" target="_blank">View</a>';
+			}
+
 			$button = '
 			<div class="btn-group">
 			  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -553,6 +560,7 @@ class Accounting extends MY_Controller
 				$classData['class_name'],
 				$sectionData['section_name'],
 				$status,
+				$attachemt,
 				$button
 			);	
 		}			
@@ -859,6 +867,7 @@ class Accounting extends MY_Controller
 							<th>Class</th>
 							<th>Section</th>
 							<th>Status</th>
+							<th>Attachment</th>
 							<th>Action</th>
 						</tr>
 					</thead>				
@@ -1064,7 +1073,7 @@ class Accounting extends MY_Controller
 
 			<div id="update-student-payment-message"></div>
 
-			<form class="form-horizontal" action="accounting/updateStudentPay" method="post" id="updateStudentPayForm">
+			<form class="form-horizontal" action="accounting/updateStudentPay" method="post" id="updateStudentPayForm" enctype="multipart/form-data">
       		<div class="col-md-6">
       			<div class="form-group">
 				    <label for="paymentName" class="col-sm-4 control-label">Payment Name: </label>
@@ -1096,15 +1105,15 @@ class Accounting extends MY_Controller
 				      <input type="text" class="form-control" id="section" placeholder="Section" disabled value="'.$sectionData['section_name'].'">
 				    </div>
 			  	  </div>
-      		</div><!-- /div.col-md-6 -->
-
-      		<div class="col-md-6">
-      			<div class="form-group">
+				  <div class="form-group">
 				    <label for="studentName" class="col-sm-4 control-label">Student Name: </label>
 				    <div class="col-sm-8">
 				      <input type="text" class="form-control" id="studentName" placeholder="Student Name" disabled value="'.$studentData['fname'].' '.$studentData['lname'].'">
 				    </div>
 				  </div>
+      		</div><!-- /div.col-md-6 -->
+
+      		<div class="col-md-6">
 				  <div class="form-group">
 				    <label for="totalAmount" class="col-sm-4 control-label">Total Amount: </label>
 				    <div class="col-sm-8">
@@ -1128,6 +1137,12 @@ class Accounting extends MY_Controller
 				    <div class="col-sm-8">
 				      <input type="text" class="form-control" id="paidAmount" name="paidAmount" placeholder="Paid Amount" ">
 				    </div>
+				  </div>
+				  <div class="form-group">
+					<label for="attachment" class="col-sm-4 control-label">Attachment</label>
+					<div class="col-sm-8">
+						<input type="file" name="attachment" class="form-control" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx">
+					</div>
 				  </div>			  
 				  <div class="form-group">
 				    <label for="inputPassword3" class="col-sm-4 control-label">Payment Type: </label>
@@ -1227,8 +1242,9 @@ class Accounting extends MY_Controller
 			$this->form_validation->set_rules($validate_data);
 			$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
 
-			if($this->form_validation->run() === true) {	
-				$create = $this->model_accounting->updateStudentPay($paymentId);					
+			if($this->form_validation->run() === true) {
+				$attachemt = $this->uploadPaymentsAttachment();
+				$create = $this->model_accounting->updateStudentPay($paymentId, $attachemt);					
 				if($create === true) {
 					$validator['success'] = true;
 					$validator['messages'] = "Successfully added";
@@ -1247,6 +1263,27 @@ class Accounting extends MY_Controller
 
 			echo json_encode($validator);	
 		}
+	}
+
+	/*
+	*------------------------------------
+	* returns the uploaded attachment url 
+	*------------------------------------
+	*/
+	protected function uploadPaymentsAttachment()
+	{
+		$type = explode('.', $_FILES['attachment']['name']);				
+		$type = $type[count($type)-1];		
+		$url =  'assets/attachments/payments/'.uniqid(rand()).'.'.$type;
+		if(in_array($type, array('gif', 'jpg', 'jpeg', 'png', 'JPG', 'GIF', 'JPEG', 'PNG', 'pdf', 'doc', 'docx'))) {
+			if(is_uploaded_file($_FILES['attachment']['tmp_name'])) {			
+				if(move_uploaded_file($_FILES['attachment']['tmp_name'], $url)) {
+					return $url;
+				}	else {
+					return false;
+				}			
+			}
+		} 
 	}
 
 	/*
@@ -1321,7 +1358,8 @@ class Accounting extends MY_Controller
 		$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
 
 		if($this->form_validation->run() === true) {	
-			$create = $this->model_accounting->createExpenses();					
+			$attachments = $this->uploadExpensesAttachments();
+			$create = $this->model_accounting->createExpenses($attachments);					
 			if($create === true) {
 				$validator['success'] = true;
 				$validator['messages'] = "Successfully added";
@@ -1350,6 +1388,37 @@ class Accounting extends MY_Controller
 		} // /else
 
 		echo json_encode($validator);
+	}
+
+	/*
+	*------------------------------------
+	* returns the uploaded expenses attachments attay of url 
+	*------------------------------------
+	*/
+	protected function uploadExpensesAttachments()
+	{
+		$keys = array_keys($_FILES['subExpensesAttachment']['name']);
+		$urls = [];
+		foreach ($keys as $key) {
+			$type = explode('.', $_FILES['subExpensesAttachment']['name'][$key]);	
+			$type = $type[count($type)-1];	
+			$url = '';
+			if($_FILES['subExpensesAttachment']['error'][$key] == UPLOAD_ERR_OK){	
+				$url =  'assets/attachments/expenses/'.uniqid(rand()).'.'.$type;
+				if(in_array($type, array('gif', 'jpg', 'jpeg', 'png', 'JPG', 'GIF', 'JPEG', 'PNG', 'pdf', 'doc', 'docx'))) {
+					if(is_uploaded_file($_FILES['subExpensesAttachment']['tmp_name'][$key])) {			
+						if(!move_uploaded_file($_FILES['subExpensesAttachment']['tmp_name'][$key], $url)) {
+							$url = '';
+						}
+					}
+				}
+			}
+			if(empty($url) && isset($this->input->post('subExpensesAttachmentOld')[$key])){
+				$url = $this->input->post('subExpensesAttachmentOld')[$key];
+			}
+			$urls[$key] = $url;
+		}
+		return $urls;
 	}
 
 	/*
@@ -1402,6 +1471,7 @@ class Accounting extends MY_Controller
 
 			$expenseNameData = $this->model_accounting->fetchExpensesNameData($id);
 			$expensesItemData = $this->model_accounting->fetchExpensesItemData($id);
+			
 	
 			$table = '<div class="form-group">
           <label for="editExpensesDate" class="col-sm-3 control-label">Expenses Date:</label>
@@ -1427,6 +1497,8 @@ class Accounting extends MY_Controller
           <tr>
             <th>Name</th>
             <th>Amount</th>
+			<th>Old Attachment</th>
+			<th>Attachment</th>
             <th style="width:10%;">Action</th>
           </tr>
         </thead>
@@ -1440,6 +1512,17 @@ class Accounting extends MY_Controller
 		            <td class="form-group">
 		            <input type="text" class="form-control" name="editSubExpensesAmount['.$x.']" id="editSubExpensesAmount'.$x.'" onkeyup="editCalculateTotalAmount()" placeholder="Expenses Amount" value="'.$value['expenses_amount'].'" />
 		            </td>
+					<td class="form-group">'
+						. (isset($value['attachment']) && !empty($value['attachment']) 
+						? '<a class="btn btn-xs btn-info" href="'. base_url($value['attachment']) .'" target="_blank">View</a>
+						 |
+						 <button type="button" class="btn btn-xs btn-danger" onclick="clearOldAttachment('. $x .')">delete</button>'  
+						: 'No Attachment') .
+						'<input type="hidden" class="form-control" name="subExpensesAttachmentOld['.$x.']" id="subExpensesAttachmentOld'.$x.'" value="'.$value['attachment'].'" />
+					</td> 
+					<td class="form-group">
+						<input type="file" class="form-control" name="subExpensesAttachment['.$x.']" id="subExpensesAttachment'.$x.'" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx"/>
+					</td>  
 		            <td>
 		            <button type="button" class="btn btn-default" onclick="removeEditExpensesRow('.$x.')"><i class="glyphicon glyphicon-remove"></i></button>
 		            </td>
@@ -1448,7 +1531,7 @@ class Accounting extends MY_Controller
         	} // /.foreach          
         $table .= '</tbody>
 	    </table>';
-
+			
 	      echo $table;
 		}
 	}
@@ -1495,7 +1578,8 @@ class Accounting extends MY_Controller
 			$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
 
 			if($this->form_validation->run() === true) {	
-				$create = $this->model_accounting->updateExpenses($id);					
+				$attachments = $this->uploadExpensesAttachments();
+				$create = $this->model_accounting->updateExpenses($id, $attachments);					
 				if($create === true) {
 					$validator['success'] = true;
 					$validator['messages'] = "Successfully added";

@@ -440,16 +440,22 @@ function updateStudentPay(id = null)
 			dateFormat: 'yyyy-mm-dd'
 		});
 
-		$("#updateStudentPayForm").unbind('submit').bind('submit', function() {
+		$("#updateStudentPayForm").unbind('submit').bind('submit', function(e) {
+			e.preventDefault();
+			
 			var form = $(this);
 			var url = form.attr('action');
 			var type = form.attr('method');
+			var formData = new FormData(this);
 
 			$.ajax({
 				url: url + '/' + id,
 				type: type,
-				data: form.serialize(),
+				data: formData,
 				dataType: 'json',
+				contentType: false,
+				processData: false,
+				cache: false,
 				success:function(response) {
 					if(response.success == true) {					
 
@@ -535,16 +541,22 @@ function removeStudentPay(id = null)
 */
 function addExpenses() 
 {
-	$("#createEpxensesForm").unbind('submit').bind('submit', function() {
+	$("#createEpxensesForm").unbind('submit').bind('submit', function(e) {
+		e.preventDefault();
+
 		var form = $(this);
 		var url = form.attr('action');
 		var type = form.attr('method');
+		var formData = new FormData(this);
 
 		$.ajax({
 			url: url,
 			type: type,
-			data: form.serialize(),
+			data: formData,
 			dataType: 'json',
+			cache: false,
+			contentType: false,
+			processData: false,
 			success:function(response) {
 				if(response.success == true) {						
 						$("#add-expenses-message").html('<div class="alert alert-success alert-dismissible" role="alert">'+
@@ -612,7 +624,10 @@ function addExpensesRow()
 		'</td>'+
 		'<td class="form-group">'+			
 			'<input type="text" class="form-control"  name="subExpensesAmount['+count+']" id="subExpensesAmount'+count+'" onkeyup="calculateTotalAmount()" placeholder="Expenses Amount" />'+									
-		'</td>'+		
+		'</td>'+
+		'<td class="form-group">'+
+            '<input type="file" class="form-control" name="subExpensesAttachment['+count+']" id="subExpensesAttachment'+count+'" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx"/>'+
+        '</td>'+
 		'<td class="form-group">'+
 			'<button type="button" class="btn btn-default" onclick="removeExpensesRow('+count+')"><i class="glyphicon glyphicon-remove"></i></button>'+
 		'</td>'+
@@ -656,7 +671,10 @@ function addEditExpensesRow()
 		'</td>'+
 		'<td class="form-group">'+			
 			'<input type="text" class="form-control"  name="editSubExpensesAmount['+count+']" id="editSubExpensesAmount'+count+'" onkeyup="editCalculateTotalAmount()" placeholder="Expenses Amount" />'+									
-		'</td>'+		
+		'</td>'+	
+		'<td class="form-group">'+
+            '<input type="file" class="form-control" name="subExpensesAttachment['+count+']" id="subExpensesAttachment'+count+'" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx"/>'+
+        '</td>'+
 		'<td class="form-group">'+
 			'<button type="button" class="btn btn-default" onclick="removeEditExpensesRow('+count+')"><i class="glyphicon glyphicon-remove"></i></button>'+
 		'</td>'+
@@ -740,16 +758,22 @@ function updateExpenses(id = null)
 				});		
 
 				/*SUBMIT FORM*/
-				$("#editEpxensesForm").unbind('submit').bind('submit', function() {					
+				$("#editEpxensesForm").unbind('submit').bind('submit', function(e) {
+					e.preventDefault();
+										
 					var form = $(this);
 					var url = form.attr('action');
 					var type = form.attr('method');
+					var formData = new FormData(this);
 
 					$.ajax({
 						url: url + '/' + id,
 						type: type,
-						data: form.serialize(),
+						data: formData,
 						dataType: 'json',
+						cache: false,
+						contentType: false,
+						processData: false,
 						success:function(response) {
 							if(response.success == true) {						
 								$("#edit-expenses-message").html('<div class="alert alert-success alert-dismissible" role="alert">'+
@@ -876,4 +900,15 @@ function viewIncome(paymentId = null)
 	if(paymentId) {
 		$('#incomeResult').load(base_url + 'accounting/viewIncomeDetail/'+paymentId);
 	}
+}
+
+/*
+* -------------------------------------------
+* clear attachment old value
+* -------------------------------------------
+*/
+function clearOldAttachment(index) {
+    $('#subExpensesAttachmentOld' + index).val('');
+	var cell = $('#subExpensesAttachmentOld' + index).closest('td');
+    cell.html('No Attachment');
 }
