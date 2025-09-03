@@ -1,4 +1,4 @@
-/assets/images/teachers/
-/_ide_helper.php
+assets/images/*
 assets/attachments/payments/*
 application/logs/*
+_ide_helper.php
