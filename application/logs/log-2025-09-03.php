@@ -3843,3 +3843,78 @@ INFO - 2025-09-03 09:57:21 --> File loaded: D:\xampp\htdocs\school-management-sy
 INFO - 2025-09-03 09:57:21 --> File loaded: D:\xampp\htdocs\school-management-system\application\views\templates/footer.php
 INFO - 2025-09-03 09:57:21 --> Final output sent to browser
 DEBUG - 2025-09-03 09:57:21 --> Total execution time: 0.0514
+INFO - 2025-09-03 10:04:04 --> Config Class Initialized
+INFO - 2025-09-03 10:04:04 --> Hooks Class Initialized
+DEBUG - 2025-09-03 10:04:04 --> UTF-8 Support Enabled
+INFO - 2025-09-03 10:04:04 --> Utf8 Class Initialized
+INFO - 2025-09-03 10:04:04 --> URI Class Initialized
+INFO - 2025-09-03 10:04:04 --> Router Class Initialized
+INFO - 2025-09-03 10:04:04 --> Output Class Initialized
+INFO - 2025-09-03 10:04:04 --> Security Class Initialized
+DEBUG - 2025-09-03 10:04:04 --> Global POST, GET and COOKIE data sanitized
+INFO - 2025-09-03 10:04:04 --> Input Class Initialized
+INFO - 2025-09-03 10:04:04 --> Language Class Initialized
+INFO - 2025-09-03 10:04:04 --> Loader Class Initialized
+INFO - 2025-09-03 10:04:04 --> Helper loaded: url_helper
+INFO - 2025-09-03 10:04:04 --> Helper loaded: file_helper
+INFO - 2025-09-03 10:04:04 --> Helper loaded: form_helper
+INFO - 2025-09-03 10:04:04 --> Database Driver Class Initialized
+INFO - 2025-09-03 10:04:04 --> Controller Class Initialized
+INFO - 2025-09-03 10:04:04 --> Model "Model_Student" initialized
+INFO - 2025-09-03 10:04:04 --> Model "Model_Teacher" initialized
+INFO - 2025-09-03 10:04:04 --> Model "Model_Classes" initialized
+INFO - 2025-09-03 10:04:04 --> Model "Model_Section" initialized
+INFO - 2025-09-03 10:04:04 --> Model "Model_Subject" initialized
+INFO - 2025-09-03 10:04:04 --> Model "Model_Marksheet" initialized
+INFO - 2025-09-03 10:04:04 --> Model "Model_Accounting" initialized
+INFO - 2025-09-03 10:04:04 --> Session: Class initialized using 'files' driver.
+INFO - 2025-09-03 10:04:04 --> File loaded: D:\xampp\htdocs\school-management-system\application\views\templates/header.php
+INFO - 2025-09-03 10:04:04 --> File loaded: D:\xampp\htdocs\school-management-system\application\views\dashboard.php
+INFO - 2025-09-03 10:04:04 --> File loaded: D:\xampp\htdocs\school-management-system\application\views\templates/footer.php
+INFO - 2025-09-03 10:04:04 --> Final output sent to browser
+DEBUG - 2025-09-03 10:04:04 --> Total execution time: 0.0366
+INFO - 2025-09-03 10:04:06 --> Config Class Initialized
+INFO - 2025-09-03 10:04:06 --> Hooks Class Initialized
+DEBUG - 2025-09-03 10:04:06 --> UTF-8 Support Enabled
+INFO - 2025-09-03 10:04:06 --> Utf8 Class Initialized
+INFO - 2025-09-03 10:04:06 --> URI Class Initialized
+INFO - 2025-09-03 10:04:06 --> Router Class Initialized
+INFO - 2025-09-03 10:04:06 --> Output Class Initialized
+INFO - 2025-09-03 10:04:06 --> Security Class Initialized
+DEBUG - 2025-09-03 10:04:06 --> Global POST, GET and COOKIE data sanitized
+INFO - 2025-09-03 10:04:06 --> Input Class Initialized
+INFO - 2025-09-03 10:04:06 --> Language Class Initialized
+INFO - 2025-09-03 10:04:06 --> Loader Class Initialized
+INFO - 2025-09-03 10:04:06 --> Helper loaded: url_helper
+INFO - 2025-09-03 10:04:06 --> Helper loaded: file_helper
+INFO - 2025-09-03 10:04:06 --> Helper loaded: form_helper
+INFO - 2025-09-03 10:04:06 --> Database Driver Class Initialized
+INFO - 2025-09-03 10:04:06 --> Controller Class Initialized
+INFO - 2025-09-03 10:04:06 --> Session: Class initialized using 'files' driver.
+INFO - 2025-09-03 10:04:06 --> File loaded: D:\xampp\htdocs\school-management-system\application\views\templates/header.php
+INFO - 2025-09-03 10:04:06 --> File loaded: D:\xampp\htdocs\school-management-system\application\views\classes.php
+INFO - 2025-09-03 10:04:06 --> File loaded: D:\xampp\htdocs\school-management-system\application\views\templates/footer.php
+INFO - 2025-09-03 10:04:06 --> Final output sent to browser
+DEBUG - 2025-09-03 10:04:06 --> Total execution time: 0.0470
+INFO - 2025-09-03 10:04:06 --> Config Class Initialized
+INFO - 2025-09-03 10:04:06 --> Hooks Class Initialized
+DEBUG - 2025-09-03 10:04:06 --> UTF-8 Support Enabled
+INFO - 2025-09-03 10:04:06 --> Utf8 Class Initialized
+INFO - 2025-09-03 10:04:06 --> URI Class Initialized
+INFO - 2025-09-03 10:04:06 --> Router Class Initialized
+INFO - 2025-09-03 10:04:06 --> Output Class Initialized
+INFO - 2025-09-03 10:04:06 --> Security Class Initialized
+DEBUG - 2025-09-03 10:04:06 --> Global POST, GET and COOKIE data sanitized
+INFO - 2025-09-03 10:04:06 --> Input Class Initialized
+INFO - 2025-09-03 10:04:06 --> Language Class Initialized
+INFO - 2025-09-03 10:04:06 --> Loader Class Initialized
+INFO - 2025-09-03 10:04:06 --> Helper loaded: url_helper
+INFO - 2025-09-03 10:04:06 --> Helper loaded: file_helper
+INFO - 2025-09-03 10:04:06 --> Helper loaded: form_helper
+INFO - 2025-09-03 10:04:06 --> Database Driver Class Initialized
+INFO - 2025-09-03 10:04:06 --> Controller Class Initialized
+INFO - 2025-09-03 10:04:06 --> Session: Class initialized using 'files' driver.
+INFO - 2025-09-03 10:04:06 --> Model "Model_Classes" initialized
+INFO - 2025-09-03 10:04:06 --> Form Validation Class Initialized
+INFO - 2025-09-03 10:04:06 --> Final output sent to browser
+DEBUG - 2025-09-03 10:04:06 --> Total execution time: 0.0349
