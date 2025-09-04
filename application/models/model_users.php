@@ -7,6 +7,27 @@ class Model_Users extends CI_Model
 		parent::__construct();
 	}
 
+	
+	/*
+	*------------------------------------
+	* inserts the users information into the database 
+	*------------------------------------
+	*/
+	public function create()
+	{
+		$insert_data = array(
+			'username' 		=> $this->input->post('username'),
+			'fname' 		=> $this->input->post('fname'),
+			'lname'			=> $this->input->post('lname'),
+			'email'			=> $this->input->post('email'),
+			'role_id'		=> $this->input->post('role_id'),
+			'password'		=> md5($this->input->post('password')),
+		);
+
+		$status = $this->db->insert('users', $insert_data);		
+		return ($status == true ? true : false);
+	}
+
 	public function validate_username($username = null)
 	{
 		if($username) {			
@@ -60,6 +81,9 @@ class Model_Users extends CI_Model
 			$query = $this->db->query($sql, array($userId));
 			return $query->row_array();
 		}
+		$sql = "SELECT * FROM users JOIN roles on roles.role_id = users.role_id";
+		$query = $this->db->query($sql);
+		return $query->result_array();
 	}
 
 	public function updateProfile($userId = null)
@@ -93,4 +117,44 @@ class Model_Users extends CI_Model
 		}
 	}
 
+	/*
+	*------------------------------------
+	* updates useres information
+	*------------------------------------
+	*/
+	public function updateInfo($userId = null)
+	{
+		if ($userId) {
+			$update_data = array(
+				'username' 			=> $this->input->post('editUsername'),
+				'fname' 			=> $this->input->post('editFname'),
+				'lname' 			=> $this->input->post('editLname'),
+				'email'				=> $this->input->post('editEmail'),
+				'role_id'			=> $this->input->post('editRoleId'),
+			);
+
+			if ($this->input->post('editPassword')) {
+				$update_data['password'] = md5($this->input->post('editPassword'));
+			}
+
+			$this->db->where('user_id', $userId);
+			$query = $this->db->update('users', $update_data);
+
+			return ($query === true ? true : false);
+		}
+	}
+
+	/*
+	*------------------------------------
+	* removes user's information 
+	*------------------------------------
+	*/
+	public function remove($userId = null)
+	{
+		if($userId) {
+			$this->db->where('user_id', $userId);
+			$result = $this->db->delete('users');
+			return ($result === true ? true: false); 
+		}
+	}
 }

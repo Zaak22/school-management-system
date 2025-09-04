@@ -63,6 +63,11 @@ class Pages extends MY_Controller
             $data['totalBudget'] = $this->model_accounting->totalBudget();
         }
 
+        if($page == 'users'){
+            $this->load->model('model_roles');
+            $data['roles'] = $this->model_roles->getAllRoles();
+        }
+        
         if($page == 'login') {
             $this->isLoggedIn();
             $this->load->view($page, $data);

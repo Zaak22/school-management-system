@@ -88,6 +88,7 @@
             <li id="incomeNav"><a href="<?php echo base_url('accounting?opt=ime') ?>">Income</a></li>           
           </ul>
         </li>
+        <li id="topNavUser"><a href="<?php echo base_url('users') ?>"> <i class="glyphicon glyphicon-user"></i> Users</a></li>
       </ul>      
       <ul class="nav navbar-nav navbar-right">        
         <li class="dropdown">

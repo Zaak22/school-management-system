@@ -224,4 +224,199 @@ class Users extends MY_Controller
 		} // /else	
 	}
 
+
+	/*
+	*------------------------------------
+	* retrieves users information 
+	*------------------------------------
+	*/
+	public function fetchUserData($userId = null)
+	{
+		if($userId) {
+			$result = $this->model_users->fetchUserData($userId);			
+		}
+		else {
+			$userData = $this->model_users->fetchUserData();
+			$result = array('data' => array());
+
+			foreach ($userData as $key => $value) {
+				
+				$button = '<!-- Single button -->
+					<div class="btn-group">
+					  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    Action <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu">
+					    <li><a type="button" data-toggle="modal" data-target="#updateUserModal" onclick="editUser('.$value['user_id'].')"> <i class="glyphicon glyphicon-edit"></i> Edit</a></li>
+					    <li><a type="button" data-toggle="modal" data-target="#removeUserModal" onclick="removeUser('.$value['user_id'].')"> <i class="glyphicon glyphicon-trash"></i> Remove</a></li>		    
+					  </ul>
+					</div>';
+
+				$result['data'][$key] = array(
+					$value['user_id'],
+					$value['username'],
+					$value['fname'] . ' ' . $value['lname'],
+					$value['email'],				
+					$value['role_name'],				
+					$button
+				);			
+			} // /foreach
+		}			
+
+		echo json_encode($result);
+	}
+
+	/*
+	*------------------------------------
+	* inserts the users information
+	* into the database 
+	*------------------------------------
+	*/
+	public function create()
+	{
+		$validator = array('success' => false, 'messages' => array());
+
+		$validate_data = array(
+			array(
+				'field' => 'username',
+				'label' => 'Username',
+				'rules' => 'required'
+			),
+			array(
+				'field' => 'fname',
+				'label' => 'First Name',
+				'rules' => 'required'
+			),
+			array(
+				'field' => 'lname',
+				'label' => 'Last Name',
+				'rules' => 'required'
+			),
+			array(
+				'field' => 'email',
+				'label' => 'Email',
+				'rules' => 'required'
+			),
+			array(
+				'field' => 'password',
+				'label' => 'Password',
+				'rules' => 'required'
+			),
+			array(
+				'field' => 'role_id',
+				'label' => 'Role',
+				'rules' => 'required'
+			)
+		);
+
+		$this->form_validation->set_rules($validate_data);
+		$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
+
+		if($this->form_validation->run() === true) {				
+			$create = $this->model_users->create();					
+			if($create == true) {
+				$validator['success'] = true;
+				$validator['messages'] = "Successfully added";
+			}
+			else {
+				$validator['success'] = false;
+				$validator['messages'] = "Error while inserting the information into the database";
+			}			
+		} 	
+		else {
+			$validator['success'] = false;
+			foreach ($_POST as $key => $value) {
+				$validator['messages'][$key] = form_error($key);
+			}			
+		} 
+
+		echo json_encode($validator);
+	}
+
+	/*
+	*------------------------------------
+	* updates user information
+	*------------------------------------
+	*/
+	public function updateInfo($userId = null)
+	{
+		if($userId) {
+			$validator = array('success' => false, 'messages' => array());
+
+			$validate_data = array(
+				array(
+					'field' => 'editUsername',
+					'label' => 'Username',
+					'rules' => 'required'
+				),
+				array(
+					'field' => 'editFname',
+					'label' => 'First Name',
+					'rules' => 'required'
+				),
+				array(
+					'field' => 'editLname',
+					'label' => 'Last Name',
+					'rules' => 'required'
+				),
+				array(
+					'field' => 'editEmail',
+					'label' => 'Email',
+					'rules' => 'required'
+				),
+				array(
+					'field' => 'editRoleId',
+					'label' => 'Role',
+					'rules' => 'required'
+				),
+			);
+
+			$this->form_validation->set_rules($validate_data);
+			$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
+
+			if($this->form_validation->run() === true) {							
+				$updateInfo = $this->model_users->updateInfo($userId);					
+				if($updateInfo == true) {
+					$validator['success'] = true;
+					$validator['messages'] = "Successfully added";
+				}
+				else {
+					$validator['success'] = false;
+					$validator['messages'] = "Error while inserting the information into the database";
+				}			
+			} 	
+			else {
+				$validator['success'] = false;
+				foreach ($_POST as $key => $value) {
+					$validator['messages'][$key] = form_error($key);
+				}			
+			}
+			echo json_encode($validator);
+		}					
+	}
+
+	/*
+	*------------------------------------
+	* removes user's information 
+	*------------------------------------
+	*/
+	public function remove($UserId = null)
+	{
+		$validator = array('success' => false, 'messages' => array());
+
+		if($UserId) {
+			$remove = $this->model_users->remove($UserId);
+			if($remove) {
+				$validator['success'] = true;
+				$validator['messages'] = "Successfully Removed";
+			} 
+			else {
+				$validator['success'] = false;
+				$validator['messages'] = "Error while removing the information";	
+			}
+		}
+
+		echo json_encode($validator);		
+	}
+
 }
