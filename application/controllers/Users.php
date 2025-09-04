@@ -2,6 +2,8 @@
 
 /**
  * @property Model_users model_users
+ * @property Model_permissions model_permissions
+ * @property Model_Roles model_roles
  */
 class Users extends MY_Controller
 {
@@ -11,6 +13,12 @@ class Users extends MY_Controller
 
 		// loading the users model
 		$this->load->model('model_users');
+
+		// loading the permissions model
+		$this->load->model('model_permissions');
+
+		// loading the roles model
+		$this->load->model('model_roles');
 
 		// loading the form validation library
 		$this->load->library('form_validation');		
@@ -41,13 +49,14 @@ class Users extends MY_Controller
 			$password = md5($this->input->post('password'));
 
 			$login = $this->model_users->login($username, $password);
-
 			if($login) {
 				$this->load->library('session');
 
 				$user_data = array(
-					'id' => $login,
-					'logged_in' => true
+					'id' => $login['user_id'],
+					'logged_in' => true,
+					'role' => $login['role_name'],
+					'permissions' => $this->model_permissions->getPermeissionsForUser($login['user_id']),
 				);
 
 				$this->session->set_userdata($user_data);
@@ -109,6 +118,11 @@ class Users extends MY_Controller
 				'field' => 'fname',
 				'label' => 'First Name',
 				'rules' => 'required'
+			),
+			array(
+				'field' => 'role_id',
+				'label' => 'Role',
+				'rules' => 'required'
 			)
 		);
 
@@ -116,8 +130,18 @@ class Users extends MY_Controller
 		$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
 
 		if($this->form_validation->run() === true) {	
-			$update = $this->model_users->updateProfile($userId);					
+			$update = $this->model_users->updateProfile($userId);
+			$role = $this->model_roles->getById($this->input->post('role_id'));		
+				
 			if($update === true) {
+				$user_data = array(
+					'id' => $userId,
+					'logged_in' => true,
+					'role' => $role['role_name'],
+					'permissions' => $this->model_permissions->getPermeissionsForUser($userId),
+				);
+
+				$this->session->set_userdata($user_data);
 				$validator['success'] = true;
 				$validator['messages'] = "Successfully Update";
 			}

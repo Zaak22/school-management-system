@@ -6,9 +6,22 @@ $(document).ready(function() {
 	$("#topNavClass").addClass('active');	
 
 	manageClassTable = $("#manageClassTable").DataTable({
-		'ajax' : base_url + 'classes/fetchClassData',
+		'ajax': {
+            url: base_url + 'classes/fetchClassData',
+            dataSrc: function(json) {
+                if (json.messages) {
+                    $("#messages").html(
+                        '<div class="alert alert-warning">' + json.messages + '</div>'
+                    );
+                    return [];
+                } else {
+                    $("#messages").html('');
+                    return json.data;
+                }
+            }
+        },
 		'order': []
-	});
+	});	
 
 	/*
 	*------------------------------------

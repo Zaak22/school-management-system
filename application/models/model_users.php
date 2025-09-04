@@ -42,11 +42,11 @@ class Model_Users extends CI_Model
 	public function login($username = null, $password = null) 
 	{
 		if($username && $password) {
-			$sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+			$sql = "SELECT * FROM users JOIN roles on roles.role_id = users.role_id WHERE username = ? AND password = ?";
 			$query = $this->db->query($sql, array($username, $password));
 			$result = $query->row_array();
 
-			return ($query->num_rows() === 1 ? $result['user_id'] : false);
+			return ($query->num_rows() === 1 ? $result : false);
 		}
 		else {
 			return false;
@@ -69,7 +69,8 @@ class Model_Users extends CI_Model
 				'username' => $this->input->post('username'),
 				'fname' => $this->input->post('fname'),
 				'lname' => $this->input->post('lname'),
-				'email' => $this->input->post('email')
+				'email' => $this->input->post('email'),
+				'role_id' => $this->input->post('role_id')
 			);
 
 			$this->db->where('user_id', $userId);

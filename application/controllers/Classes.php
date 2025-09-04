@@ -116,6 +116,11 @@ class Classes extends MY_Controller
 	*/
 	public function fetchClassData($classId = null)
 	{
+		if(!has_permission('view_classes')) {
+			echo json_encode(['data' => [], 'messages' => 'You dont have permission to see classes data']);
+			return;
+		}
+
 		if($classId) {
 			$classData = $this->model_classes->fetchClassData($classId);
 			echo json_encode($classData);
@@ -132,10 +137,10 @@ class Classes extends MY_Controller
 				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				    Action <span class="caret"></span>
 				  </button>
-				  <ul class="dropdown-menu">
-				    <li><a type="button" data-toggle="modal" data-target="#editClassModal" onclick="editClass('.$value['class_id'].')"> <i class="glyphicon glyphicon-edit"></i> Edit</a></li>
-				    <li><a type="button" data-toggle="modal" data-target="#removeClassModal" onclick="removeClass('.$value['class_id'].')"> <i class="glyphicon glyphicon-trash"></i> Remove</a></li>		    
-				  </ul>
+				  <ul class="dropdown-menu">'.
+				  	(has_permission('edit_class') ? '<li><a type="button" data-toggle="modal" data-target="#editClassModal" onclick="editClass('.$value['class_id'].')"> <i class="glyphicon glyphicon-edit"></i> Edit</a></li>' : '').
+					(has_permission('delete_class') ?'<li><a type="button" data-toggle="modal" data-target="#removeClassModal" onclick="removeClass('.$value['class_id'].')"> <i class="glyphicon glyphicon-trash"></i> Remove</a></li>'	: '').	    
+				  '</ul>
 				</div>';
 
 				$result['data'][$key] = array(
@@ -158,6 +163,11 @@ class Classes extends MY_Controller
 	*/
 	public function update($classId = null) 
 	{
+		if(!has_permission('edit_class')) {
+			echo json_encode(['success' => false, 'messages' => 'You dont have permission to edit classes data']);
+			return;
+		}
+
 		if($classId) {
 			$validator = array('success' => false, 'messages' => array());
 
@@ -247,6 +257,11 @@ class Classes extends MY_Controller
 	*/
 	public function remove($classId = null)
 	{
+		if(!has_permission('delete_class')) {
+			echo json_encode(['success' => false, 'messages' => 'You dont have permission to delete classes data']);
+			return;
+		}
+
 		if($classId) {
 			$remove = $this->model_classes->remove($classId);
 			if($remove === true) {

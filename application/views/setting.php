@@ -34,6 +34,18 @@
 					      <label for="email">Email : </label>
 					      <input type="text" id="email" name="email" class="form-control" placeholder="Email" value="<?php echo $userData['email'] ?>">
 					    </div>
+						<div class="form-group">
+					      <label for="role_id">Role : </label>
+							<select name="role_id" id="role_id" class="form-control">
+								<option value="">-- Select Role --</option>
+								<?php foreach ($roles as $role): ?>
+									<option value="<?= $role['role_id']; ?>" 
+										<?= ($role['role_id'] == $userData['role_id']) ? 'selected' : ''; ?>>
+										<?= $role['role_name']; ?>
+									</option>
+								<?php endforeach; ?>
+							</select>
+					    </div>
 					    
 					    <button type="submit" class="btn btn-primary">Save Changes</button>
 					  </fieldset>

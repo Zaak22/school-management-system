@@ -10,11 +10,13 @@
   <div class="panel-body">  	    
       <div id="messages"></div>
 
+      <?php if(has_permission('create_class')) : ?>
     	<div class="pull pull-right">
     		<button type="button" class="btn btn-info" data-toggle="modal" data-target="#addClass" id="addClassModelBtn"> 
     			<i class="glyphicon glyphicon-plus-sign"></i> Add Class
     		</button>
     	</div>
+      <?php endif; ?>
 
     	<br /> <br /> <br />
     	
@@ -32,6 +34,7 @@
   </div>
 </div>
 
+<?php if(has_permission('create_class')) : ?>
 <!-- add class -->
 <div class="modal fade" tabindex="-1" role="dialog" id="addClass">
   <div class="modal-dialog" role="document">
@@ -68,7 +71,9 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<?php endif; ?>
 
+<?php if(has_permission('edit_class')): ?>
 <!-- edit class -->
 <div class="modal fade" tabindex="-1" role="dialog" id="editClassModal">
   <div class="modal-dialog" role="document">
@@ -105,7 +110,9 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<?php endif; ?>
 
+<?php if(has_permission('delete_class')): ?>
 <!-- remove class -->
 <div class="modal fade" tabindex="-1" role="dialog" id="removeClassModal">
   <div class="modal-dialog" role="document">
@@ -127,6 +134,7 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<?php endif; ?>
 
 
 <script type="text/javascript" src="<?php echo base_url('custom/js/classes.js'); ?>"></script>
