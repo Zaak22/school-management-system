@@ -510,3 +510,157 @@ function getSelectClassSection(rowId = null)
 		$("#bulkstsectionName" + rowId).load(base_url + 'student/fetchClassSection/'+class_id);
 	}
 }
+
+
+
+/*
+*-------------------------------
+* show student's transgers
+*-------------------------------
+*/
+function showStudentTransfers(studentId) {
+    $.ajax({
+        url: "studentTransfer/fetchStudentTransferData/" + studentId,
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            var tbody = $("#studentTransferHistoryTable tbody");
+            tbody.empty();
+
+            if (data.length === 0) {
+                tbody.append('<tr><td colspan="7" class="text-center">No transfers found</td></tr>');
+            } else {
+				
+        		$("#studentTransferModalTitle").text("Transfer History for " +  data.data[0]['student_full_name']);
+
+                $.each(data.data, function(index, transfer) {
+                    tbody.append(
+                        '<tr>'+
+                        '<td>' + (index+1) + '</td>'+
+                        '<td>' + transfer['from_class_name'] + '</td>'+
+                        '<td>' + transfer['to_class_name'] + '</td>'+
+                        '<td>' + transfer['from_section_name'] + '</td>'+
+                        '<td>' + transfer['to_section_name'] + '</td>'+
+                        '<td>' + (transfer['reason'] || '') + '</td>'+
+                        '<td>' + transfer['transfer_at'] + '</td>'+
+                        '</tr>'
+                    );
+                });
+            }
+
+            $('#showStudentTransfersModal').modal('show');
+        },
+        error: function() {
+            alert("Failed to fetch transfer history.");
+        }
+    });
+}
+
+/*
+*-------------------------------
+* handle select/deselect all in tables
+*-------------------------------
+*/
+$(document).on('click', '.selectAll', function(e) {
+    e.stopPropagation(); 
+    var table = $(this).closest('table');
+    var isChecked = $(this).is(':checked');
+    table.find('.studentCheckbox').prop('checked', isChecked);
+	if ($(".studentCheckbox:checked").length > 0) {
+		$("#bulkTransferBtn").prop("disabled", false);
+	} else {
+		$("#bulkTransferBtn").prop("disabled", true);
+	}
+});
+
+$(document).on("change", ".studentCheckbox", function() {
+  if ($(".studentCheckbox:checked").length > 0) {
+    $("#bulkTransferBtn").prop("disabled", false);
+  } else {
+    $("#bulkTransferBtn").prop("disabled", true);
+  }
+});
+
+$(document).on("click", "#bulkTransferBtn", function() {
+  $("#bulkTransferModal").modal("show");
+});
+
+$(document).on("change", "#transferClassSelect", function() {
+	var class_id = $(this).val();
+	$("#transferSectionSelect").load(base_url + 'student/fetchClassSection/'+class_id);
+});
+
+$(document).on("click", "#submitTransfere", function(e) {
+	e.preventDefault();
+
+  	const toClass = $("#transferClassSelect").val();
+  	const toSection = $("#transferSectionSelect").val();
+  	const reason = $("#reason").val();
+	
+	if (!toClass || !toSection) {
+		$("#tranferMessages").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
+			'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+			"Please select both class and section first" + 
+		'</div>');	
+		return;
+	}
+
+	// Gather selected students
+	var studentIds = $(".studentCheckbox:checked").map(function() {
+		return $(this).val();
+	}).get();
+
+
+	console.log(studentIds);
+	
+    if (studentIds.length === 0) {
+		$("#tranferMessages").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
+			'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+			"Please select at least one student first" + 
+		'</div>');				
+        return;
+    }
+
+	$.ajax({
+		url: 'student/transfer',
+		type: "POST",
+		data: {
+            student_ids: studentIds,
+            to_class: toClass,
+            to_section: toSection,
+            reason: reason,
+        },
+		dataType: 'json',
+		success:function(response) {
+			if(response.success == true) {						
+				$('.form-group').removeClass('has-error').removeClass('has-success');
+				$('.text-danger').remove();
+				clearForm();
+				$("#bulkTransferModal").modal("hide");
+				location.reload();
+			}	
+			else {									
+				if(response.messages instanceof Object) {							
+					$.each(response.messages, function(index, value) {
+						var key = $("#" + index);
+
+						key.closest('.form-group')
+						.removeClass('has-error')
+						.removeClass('has-success')
+						.addClass(value.length > 0 ? 'has-error' : 'has-success')
+						.find('.text-danger').remove();							
+
+						key.after(value);
+					});
+				}
+				else {		
+					alert('sds');					
+					$("#tranferMessages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
+						'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+						response.messages + 
+					'</div>');						
+				}							
+			} // /else
+		} // /success
+	}); // /ajax
+});

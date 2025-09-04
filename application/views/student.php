@@ -497,12 +497,40 @@ else if($this->input->get('opt') == 'mgst') { ?>
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+
+
+<!-- student transfers modal -->
+ <div class="modal fade" id="showStudentTransfersModal" tabindex="-1" role="dialog" aria-labelledby="showStudentTransfersModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="studentTransferModalTitle">Transfer History</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered" id="studentTransferHistoryTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>From Class</th>
+              <th>To Class</th>
+              <th>From Section</th>
+              <th>To Section</th>
+              <th>Reason</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div> <!-- /.modal -->
 <?php 
 
 } // /else show_404() 
 
 ?>
-
 
 
 <script type="text/javascript" src="<?php echo base_url('custom/js/student.js') ?>"></script>

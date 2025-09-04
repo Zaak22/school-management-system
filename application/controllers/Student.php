@@ -165,20 +165,31 @@ class Student extends MY_Controller
 	{
 		if($classId) {
 			$sectionData = $this->model_section->fetchSectionDataByClass($classId);	
-			$classData = $this->model_classes->fetchClassData($classId);									
+			$classData = $this->model_classes->fetchClassData($classId);	
+
 			$tab = array();			
 			$tab['sectionData'] = $sectionData;			
 
 			$tab['html'] = '<!-- Nav tabs -->
-            <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#classStudent" aria-controls="classStudent" role="tab" data-toggle="tab">All Student</a></li>              
-            ';            	
-            	$x = 1;
-            	foreach ($sectionData as $key => $value) {            	
-					$tab['html'] .= '<li role="presentation"><a href="#countSection'.$x.'" aria-controls="countSection" role="tab" data-toggle="tab"> Section ('.$value['section_name'].')</a></li>';
-					$x++;
-				} // /foreach              
-            $tab['html'] .= '</ul>
+			<div class="row" style="margin-bottom:10px;">
+				<div class="col-sm-10 text-right">
+					<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active"><a href="#classStudent" aria-controls="classStudent" role="tab" data-toggle="tab">All Student</a></li>              
+					';            	
+						$x = 1;
+						foreach ($sectionData as $key => $value) {            	
+							$tab['html'] .= '<li role="presentation"><a href="#countSection'.$x.'" aria-controls="countSection" role="tab" data-toggle="tab"> Section ('.$value['section_name'].')</a></li>';
+							$x++;
+						} // /foreach              
+					$tab['html'] .= '</ul>
+				</div>
+				<div class="text-right" style="margin-right:10px;">
+					<button type="button" id="bulkTransferBtn" class="btn btn-primary" disabled>
+					Bulk Transfer
+					</button>
+				</div>
+			</div>
+            
 
             <!-- Tab panes -->
             <div class="tab-content">
@@ -186,10 +197,11 @@ class Student extends MY_Controller
               	
               	<br /> <br />
 
-                <table class="table table-bordered" id="manageStudentTable">
+                <table class="table table-bordered studentTable" id="manageStudentTable">
                   <thead>
                     <tr>
-                      <th>#</th>
+					  <th><input type="checkbox" class="selectAll"></th>
+                      <th>Photo</th>
                       <th>Name</th>
                       <th>Class</th>
                       <th>Section</th>
@@ -201,6 +213,7 @@ class Student extends MY_Controller
               </div>'; 
               	$x = 1;
 				foreach ($sectionData as $key => $value) {
+					
 					$tab['html'] .= '<div role="tabpanel" class="tab-pane" id="countSection'.$x.'">
 						<br /> 
 						<div class="well well-sm">
@@ -208,10 +221,11 @@ class Student extends MY_Controller
 							Section : '.$value['section_name'].'							
 						</div>
 
-						<table class="table table-bordered classSectionStudentTable" id="manageStudentTable'.$x.'" style="width:100%;">
+						<table class="table table-bordered classSection StudentTable" id="manageStudentTable'.$x.'" style="width:100%;">
 		                  <thead>
 		                    <tr>
-		                      <th>#</th>
+		                      <th><input type="checkbox" class="selectAll"></th>
+		                      <th>Photo</th>
 		                      <th>Name</th>
 		                      <th>Class</th>
 		                      <th>Section</th>
@@ -227,9 +241,65 @@ class Student extends MY_Controller
               $tab['html'] .= '              
             </div>';
 
+			$tab['html'] .= $this->bulkTransferView();
+
             echo json_encode($tab);
             // echo $tab;
 		}
+	}
+
+	protected function bulkTransferView()
+	{
+		$allClassesData = $this->model_classes->fetchClassData();
+
+		$bulkTranferForm = '
+				<form id="bulkTransferForm">
+					<div class="modal-body">
+					<!-- Class select -->
+					<div class="form-group">
+					<label for="to_class">The New Class</label>
+					<select class="form-control" name="to_class" id="transferClassSelect">
+						<option value="">Select Class</option>
+						';
+		foreach ($allClassesData as $class) {
+			$bulkTranferForm .= '<option value="' . $class['class_id'] . '">' . $class['class_name'] . '(' . $class['numeric_name'] . ')' . '</option>';
+		}
+
+		$bulkTranferForm .= '
+					</select>
+					</div>
+					<div class="form-group">
+					<label for="to_section">The New Section</label>
+					<select class="form-control" name="to_section" id="transferSectionSelect">
+						<option value="">Select Class</option>
+					</select>
+					</div>
+					<div class="form-group">
+					<label for="reason">Reason</label>
+					<input class="form-control" name="reason" id="reason" placeholder="What is the transfer reason?"></input>
+					</div>
+					<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					<button type="submit" class="btn btn-primary" id="submitTransfere">Transfer</button>
+					</div>
+				</form>
+			';
+
+		$result =  '
+			<!-- Bulk Transfer Modal -->
+			<div class="modal fade" id="bulkTransferModal" tabindex="-1" role="dialog" aria-labelledby="bulkTransferLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content rounded-2xl shadow-lg">
+				<div class="modal-header">
+					<h4 class="modal-title">Bulk Transfer</h4>
+					<div id="tranferMessages"></div>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+					</button>
+				</div>' . $bulkTranferForm . '</div>
+			</div>
+			</div>';
+		return $result;
 	}
 
 	public function fetchStudentByClass($classId = null) {
@@ -249,10 +319,12 @@ class Student extends MY_Controller
 				  <ul class="dropdown-menu">			  	
 				    <li><a href="#" data-toggle="modal" data-target="#editStudentModal" onclick="updateStudent('.$value['student_id'].')">Edit</a></li>
 				    <li><a href="#" data-toggle="modal" data-target="#removeStudentModal" onclick="removeStudent('.$value['student_id'].')">Remove</a></li>			    
+				    <li><a href="#" data-toggle="modal" data-target="#showStudentTransfersModal" onclick="showStudentTransfers('.$value['student_id'].')">Show Transfers</a></li>			    
 				  </ul>
 				</div>';
-
+				
 				$result['data'][$key] = array(
+					'<input type="checkbox" class="studentCheckbox" value="'.$value['student_id'].'">',
 					$img,
 					$value['fname'] . ' ' . $value['lname'],
 					$classData['class_name'],
@@ -288,10 +360,12 @@ class Student extends MY_Controller
 				  <ul class="dropdown-menu">			  	
 				    <li><a href="#" data-toggle="modal" data-target="#editStudentModal" onclick="updateStudent('.$value['student_id'].')">Edit</a></li>
 				    <li><a href="#" data-toggle="modal" data-target="#removeStudentModal" onclick="removeStudent('.$value['student_id'].')">Remove</a></li>			    
-				  </ul>
-				</div>';
+  				    <li><a href="#" data-toggle="modal" data-target="#showStudentTransfersModal" onclick="showStudentTransfers('.$value['student_id'].')">Show Transfers</a></li>			    
 
+				</ul>
+				</div>';
 				$result['data'][$key] = array(
+					'<input type="checkbox" class="studentCheckbox" value="'.$value['student_id'].'">',
 					$img,
 					$value['fname'] . ' ' . $value['lname'],
 					$classData['class_name'],
@@ -569,5 +643,54 @@ class Student extends MY_Controller
 		echo json_encode($validator);
 	}
 
+	public function transfer()
+	{
+		$validator = array('success' => false, 'tranferMessages' => array());
+		
+		$validate_data = array(
+			array(
+				'field' => 'to_class',
+				'label' => 'To Class',
+				'rules' => 'required'
+			),			
+			array(
+				'field' => 'to_section',
+				'label' => 'To Section',
+				'rules' => 'required'
+			),
+			array(
+				'field' => 'reason',
+				'label' => 'Reason',
+				'rules' => 'required'
+			)
+		);
 
+		$this->form_validation->set_rules($validate_data);
+		$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
+
+		if($this->form_validation->run() === true) {	
+			$studentIds = $this->input->post('student_ids');
+			$toClass = $this->input->post('to_class');
+			$toSection = $this->input->post('to_section');
+			$reason = $this->input->post('reason');
+
+			$create = $this->model_student->transfer($studentIds, $toClass, $toSection, $reason);					
+			if($create == true) {
+				$validator['success'] = true;
+				$validator['messages'] = "Successfully added";
+			}
+			else {
+				$validator['success'] = false;
+				$validator['messages'] = "Error while inserting the information into the database";
+			}			
+		} 	
+		else {			
+			$validator['success'] = false;
+			foreach ($_POST as $key => $value) {
+				$validator['messages'][$key] = form_error($key);
+			}
+		} // /else
+
+		echo json_encode($validator);
+	}
 }

@@ -49,3 +49,11 @@
 .alternate-dates {
 	display: none;
 }
+
+/* Disable sorting icon on first column */
+th:first-child.sorting,
+th:first-child.sorting_asc,
+th:first-child.sorting_desc {
+  background: none !important;
+  cursor: default !important;
+}

@@ -177,4 +177,44 @@ class Model_Student extends CI_Model
 		$query = $this->db->query($sql);
 		return $query->num_rows();
 	}
+
+	/*
+	*-------------------------------------------
+	* Transfere students to another class or section
+	*-------------------------------------------
+	*/
+	public function transfer($studentIds, $toClassId, $toSectionId, $reason)
+	{
+		if (empty($studentIds)) {
+			return false;
+		}
+
+		$this->db->trans_start();
+
+		$this->db->where_in('student_id', $studentIds);
+		$students = $this->db->get('student')->result_array();
+
+		foreach ($students as $student) {
+			$transferData = [
+				'student_id'       => $student['student_id'],
+				'from_class_id'    => $student['class_id'],
+				'from_section_id'  => $student['section_id'],
+				'to_class_id'      => $toClassId,
+				'to_section_id'    => $toSectionId,
+				'reason'           => $reason
+			];
+
+			$this->db->insert('student_transfer', $transferData);
+
+			$this->db->where('student_id', $student['student_id']);
+			$this->db->update('student', [
+				'class_id'   => $toClassId,
+				'section_id' => $toSectionId
+			]);
+		}
+
+		$this->db->trans_complete();
+
+		return $this->db->trans_status();
+	}
 }
