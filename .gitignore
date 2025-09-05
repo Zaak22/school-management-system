@@ -1,4 +1,9 @@
 assets/images/*
-assets/attachments/*
+assets/attachments/payments/*
+assets/attachments/expenses/*
 application/logs/*
 _ide_helper.php
+
+!assets/attachments/payments/.gitkeep
+!assets/attachments/expenses/.gitkeep
+!assets/attachments/.gitkeep
