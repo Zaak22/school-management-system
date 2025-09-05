@@ -62,6 +62,7 @@ class Pages extends MY_Controller
             $data['totalIncome'] = $this->model_accounting->totalIncome();
             $data['totalExpenses'] = $this->model_accounting->totalExpenses();
             $data['totalBudget'] = $this->model_accounting->totalBudget();
+            $data['classes'] = $this->model_classes->fetchClassData();
         }
 
         if($page == 'users'){

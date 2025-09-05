@@ -2,6 +2,12 @@
 
 class Model_Attendance extends CI_Model 
 {
+	protected static $PRESENT = 1;
+	protected static $ABSENT = 2;
+	protected static $LATE = 3;
+	protected static $STUDENTS_TYPE = 1;
+	protected static $TEACHERS_TYPE = 2;
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -127,6 +133,29 @@ class Model_Attendance extends CI_Model
 			
 	}
 
-	
+	/*
+	*------------------------------------------------
+	* fetch the daily summary of absens and presents 
+	*------------------------------------------------
+	*/
+	public function getStudentDailySummery($start, $end, $classId=null)
+	{
+		$this->db->select('attendance_date, 
+				SUM(CASE WHEN mark="' . self::$PRESENT . '" THEN 1 ELSE 0 END) as present,
+				SUM(CASE WHEN mark="' . self::$ABSENT . '" THEN 1 ELSE 0 END) as absent,
+				SUM(CASE WHEN mark="' . self::$LATE . '" THEN 1 ELSE 0 END) as late')
+			->from('attendance')
+			->where('attendance_type =', self::$STUDENTS_TYPE)
+			->where('attendance_date >=', $start)
+			->where('attendance_date <=', $end);
+			
 
+		if($classId) {
+			$this->db->where('class_id = ', $classId);
+		}
+
+		$this->db->group_by('attendance_date');
+
+		return $this->db->get()->result_array();
+	}
 }
