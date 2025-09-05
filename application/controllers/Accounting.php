@@ -537,10 +537,10 @@ class Accounting extends MY_Controller
 
 
 
-			$attachemt = '';
+			$attachment = '';
 			if(isset($value['attachment'])){
 				$url = base_url($value['attachment']);
-				$attachemt = '<a class = "btn btn-xs btn-info" href="' . $url . '" target="_blank">View</a>';
+				$attachment = '<a class = "btn btn-xs btn-info" href="' . $url . '" target="_blank">View</a>';
 			}
 
 			$button = '
@@ -560,7 +560,7 @@ class Accounting extends MY_Controller
 				$classData['class_name'],
 				$sectionData['section_name'],
 				$status,
-				$attachemt,
+				$attachment,
 				$button
 			);	
 		}			
@@ -1243,8 +1243,8 @@ class Accounting extends MY_Controller
 			$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
 
 			if($this->form_validation->run() === true) {
-				$attachemt = $this->uploadPaymentsAttachment();
-				$create = $this->model_accounting->updateStudentPay($paymentId, $attachemt);					
+				$attachment = $this->uploadPaymentsAttachment();
+				$create = $this->model_accounting->updateStudentPay($paymentId, $attachment);					
 				if($create === true) {
 					$validator['success'] = true;
 					$validator['messages'] = "Successfully added";
@@ -1682,6 +1682,10 @@ class Accounting extends MY_Controller
 			$sectionData = $this->model_section->fetchSectionByClassSection($paymentData['class_id'], $paymentData['section_id']);
 			$studentData = $this->model_student->fetchStudentData($paymentData['student_id']);
 
+	
+			$url = base_url($paymentData['attachment']);
+			$attachment = ($paymentData['attachment'] ? '<a class = "btn btn-xs btn-info" href="' . $url . '" target="_blank">View</a>' : '');
+
 			$data = '<table class="table table-bordered table-responsive table-striped">
 			<tbody>
 				<tr>
@@ -1711,6 +1715,10 @@ class Accounting extends MY_Controller
 				<tr>
 					<th>Student Name : </th>
 					<td>'.$studentData['fname'].' '. $studentData['lname'] .'</td>
+				</tr>
+				<tr>
+					<th>Attachment : </th>
+					<td>'.$attachment.'</td>
 				</tr>
 			</tbody>
 			</table>';
