@@ -223,7 +223,7 @@ class Model_Accounting extends CI_Model
 	* paymentId for `payment` table `payment_id`
 	*---------------------------------------------------------------
 	*/
-	public function updateStudentPay($paymentId = null, $attachemt)
+	public function updateStudentPay($paymentId = null, $attachment)
 	{
 		if($paymentId) {
 			$update_data = array(
@@ -231,7 +231,7 @@ class Model_Accounting extends CI_Model
 				'paid_amount'  => $this->input->post('paidAmount'),
 				'payment_type' => $this->input->post('paymentType'),
 				'status'       => $this->input->post('status'),
-				'attachment'   => $attachemt,
+				'attachment'   => $attachment,
 			);
 
 			$this->db->where('payment_id', $paymentId);
