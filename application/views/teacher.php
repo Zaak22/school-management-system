@@ -359,5 +359,40 @@
 </div><!-- /.modal -->
 
 
+<!-- creaate user for a teacher -->
+<div class="modal fade" tabindex="-1" role="dialog" id="createUserForTeacherModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Create New User for Teacher</h4>
+      </div>
+		<form class="form-horizontal" method="post" id="createUserForTeacherForm">
+		    <div class="modal-body">
+		 	<div id="edit-role-messages"></div>
+
+			<div class="form-group">
+				<label for="username" class="col-sm-2 control-label">Username:</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="username" name="username" placeholder="Username">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="password" class="col-sm-2 control-label">Password:</label>
+				<div class="col-sm-10">
+					<input type="password" class="form-control" id="password" name="password" placeholder="Password">
+				</div>
+			</div>
+      	<div id="create-user-for-teacher-messages"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="createUserForTeacherBtn">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 
 <script type="text/javascript" src="<?php echo base_url('custom/js/teacher.js') ?>"></script>

@@ -2,6 +2,7 @@
 
 /**
  * @property Model_teacher model_teacher
+ * @property Model_users model_users
  */
 class Teacher extends MY_Controller 
 {
@@ -13,6 +14,9 @@ class Teacher extends MY_Controller
 
 		// loading the teacher model
 		$this->load->model('model_teacher');
+
+		// loading the user model
+		$this->load->model('model_users');
 
 		// loading the form validation library
 		$this->load->library('form_validation');		
@@ -130,6 +134,7 @@ class Teacher extends MY_Controller
 					  <ul class="dropdown-menu">
 					    <li><a type="button" data-toggle="modal" data-target="#updateTeacherModal" onclick="editTeacher('.$value['teacher_id'].')"> <i class="glyphicon glyphicon-edit"></i> Edit</a></li>
 					    <li><a type="button" data-toggle="modal" data-target="#removeTeacherModal" onclick="removeTeacher('.$value['teacher_id'].')"> <i class="glyphicon glyphicon-trash"></i> Remove</a></li>		    
+					    <li><a type="button" data-toggle="modal" data-target="#createUserForTeacherModal" onclick="createUserForTeacher('.$value['teacher_id'].')"> <i class="glyphicon glyphicon-user"></i><span class="glyphicon glyphicon-plus"></span> Create User Account </a></li>		    
 					  </ul>
 					</div>';
 
@@ -295,7 +300,4 @@ class Teacher extends MY_Controller
 
 		echo json_encode($validator);		
 	}
-
-
-
 }

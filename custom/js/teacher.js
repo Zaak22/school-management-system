@@ -309,6 +309,44 @@ function removeTeacher(teacherId = null)
 	} // /if
 }
 
+
+/*
+*-------------------------------------------------
+* create new user for a teacher function
+*-------------------------------------------------
+*/
+function createUserForTeacher(teacherId = null)
+{
+	if(teacherId) {
+		$("#createUserForTeacherForm").unbind('submit').bind('submit', function(e) {
+			e.preventDefault();
+			var form = $(this);
+			$.ajax({
+				url : 'users/createUserFromTeacher/' + teacherId,
+				type: 'post',
+				data: form.serialize(),
+				dataType: 'json',
+				success:function(response) {
+					if(response.success == true) {
+						$("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
+						  	'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+						  	response.messages + 
+						'</div>');
+
+						// manageTeacherTable.ajax.reload(null, false);
+						$("#createUserForTeacherModal").modal('hide');
+					}
+					else{
+						$("#remove-messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
+						  	'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+						  	response.messages + 
+						'</div>');
+					}
+				} // /response
+			}); // /ajax
+		}); // /remove teacher button clicked of the modal button
+	} // /if
+}
 /*
 *-------------------------------------------------
 * clears the form 
