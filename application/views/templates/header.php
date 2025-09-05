@@ -18,10 +18,15 @@
 
   <!-- custom css -->
   <link rel="stylesheet" type="text/css" href="<?php echo base_url('custom/css/custom.css') ?>"> 
-
+  
   <!-- jquery -->
   <script type="text/javascript" src="<?php echo base_url('assets/jquery/jquery.min.js') ?>"></script>
   
+  <!-- Select2 CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+  <!-- Select2 JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 </head>
 <body>
@@ -88,7 +93,10 @@
             <li id="incomeNav"><a href="<?php echo base_url('accounting?opt=ime') ?>">Income</a></li>           
           </ul>
         </li>
+        <?php if(has_permission('view_users')) : ?>
         <li id="topNavUser"><a href="<?php echo base_url('users') ?>"> <i class="glyphicon glyphicon-user"></i> Users</a></li>
+        <li id="topNavRole"><a href="<?php echo base_url('roles') ?>"> <i class="glyphicon glyphicon-lock"></i> Roles</a></li>
+        <?php endif; ?>
       </ul>      
       <ul class="nav navbar-nav navbar-right">        
         <li class="dropdown">

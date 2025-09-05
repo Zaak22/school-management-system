@@ -13,17 +13,8 @@ class Model_Users extends CI_Model
 	* inserts the users information into the database 
 	*------------------------------------
 	*/
-	public function create()
+	public function create($insert_data)
 	{
-		$insert_data = array(
-			'username' 		=> $this->input->post('username'),
-			'fname' 		=> $this->input->post('fname'),
-			'lname'			=> $this->input->post('lname'),
-			'email'			=> $this->input->post('email'),
-			'role_id'		=> $this->input->post('role_id'),
-			'password'		=> md5($this->input->post('password')),
-		);
-
 		$status = $this->db->insert('users', $insert_data);		
 		return ($status == true ? true : false);
 	}

@@ -4,6 +4,7 @@
  * @property Model_users model_users
  * @property Model_permissions model_permissions
  * @property Model_Roles model_roles
+ * @property Model_teacher model_teacher
  */
 class Users extends MY_Controller
 {
@@ -312,8 +313,72 @@ class Users extends MY_Controller
 		$this->form_validation->set_rules($validate_data);
 		$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
 
-		if($this->form_validation->run() === true) {				
-			$create = $this->model_users->create();					
+		if($this->form_validation->run() === true) {
+			$insert_data = array(
+				'username' 		=> $this->input->post('username'),
+				'fname' 		=> $this->input->post('fname'),
+				'lname'			=> $this->input->post('lname'),
+				'email'			=> $this->input->post('email'),
+				'role_id'		=> $this->input->post('role_id'),
+				'password'		=> md5($this->input->post('password')),
+			);
+			$create = $this->model_users->create($insert_data);
+
+			if($create == true) {
+				$validator['success'] = true;
+				$validator['messages'] = "Successfully added";
+			}
+			else {
+				$validator['success'] = false;
+				$validator['messages'] = "Error while inserting the information into the database";
+			}			
+		} 	
+		else {
+			$validator['success'] = false;
+			foreach ($_POST as $key => $value) {
+				$validator['messages'][$key] = form_error($key);
+			}			
+		} 
+
+		echo json_encode($validator);
+	}
+
+	public function createUserFromTeacher($teacherId)
+	{
+		$validator = array('success' => false, 'messages' => array());
+
+		$validate_data = array(
+			array(
+				'field' => 'username',
+				'label' => 'Username',
+				'rules' => 'required'
+			),
+			array(
+				'field' => 'password',
+				'label' => 'Password',
+				'rules' => 'required'
+			)
+		);
+
+		$this->form_validation->set_rules($validate_data);
+		$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
+
+		if($this->form_validation->run() === true) {
+			$this->load->model('model_teacher');
+			$teacher = $this->model_teacher->fetchTeacherData($teacherId);
+			$teacherRole = $this->model_roles->fetchRoleDataByName('teacher');
+			
+			$insert_data = array(
+				'username' 		=> $this->input->post('username'),
+				'fname' 		=> $teacher['fname'],
+				'lname'			=> $teacher['lname'],
+				'email'			=> $teacher['email'],
+				'role_id'		=> $teacherRole['role_id'],
+				'password'		=> md5($this->input->post('password')),
+			);
+			
+			$create = $this->model_users->create($insert_data);
+
 			if($create == true) {
 				$validator['success'] = true;
 				$validator['messages'] = "Successfully added";

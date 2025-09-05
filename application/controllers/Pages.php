@@ -8,6 +8,7 @@
  * @property Model_users model_users
  * @property Model_marksheet model_marksheet
  * @property Model_roles model_roles
+ * @property Model_permissions model_permissions
  */
 class Pages extends MY_Controller
 {
@@ -66,6 +67,11 @@ class Pages extends MY_Controller
         if($page == 'users'){
             $this->load->model('model_roles');
             $data['roles'] = $this->model_roles->getAllRoles();
+        }
+
+        if($page == 'roles'){
+            $this->load->model('model_permissions');
+            $data['permissions'] = $this->model_permissions->fetchPermissionData();
         }
         
         if($page == 'login') {
