@@ -120,11 +120,6 @@ class Users extends MY_Controller
 				'label' => 'First Name',
 				'rules' => 'required'
 			),
-			array(
-				'field' => 'role_id',
-				'label' => 'Role',
-				'rules' => 'required'
-			)
 		);
 
 		$this->form_validation->set_rules($validate_data);
@@ -132,13 +127,11 @@ class Users extends MY_Controller
 
 		if($this->form_validation->run() === true) {	
 			$update = $this->model_users->updateProfile($userId);
-			$role = $this->model_roles->getById($this->input->post('role_id'));		
 				
 			if($update === true) {
 				$user_data = array(
 					'id' => $userId,
 					'logged_in' => true,
-					'role' => $role['role_name'],
 					'permissions' => $this->model_permissions->getPermeissionsForUser($userId),
 				);
 
